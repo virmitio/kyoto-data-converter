@@ -1,6 +1,7 @@
 import re
 
-filename = './WWW_aeasy03380867.dat' # Should parameterize this
+
+filename = 'WWW_aeasy04134001.dat' # Should parameterize this
 outfilename = './newresults.csv' # Also parameterize this
 prefix = 'N6E01' # Should also figure out what this is and make a real variable of it.
 
@@ -10,11 +11,14 @@ with open(filename) as fin:
 dates = []
 realdata = {}
 
-DTTokenString = prefix + '(?P<year>\d\d)(?P<month>\d\d)(?P<day>\d\d)(?P<var1>.)(?P<hour>\d\d)(?P<var2>.*)'
+DTTokenString = prefix + '(?P<year>\d\d)(?P<month>\d\d)(?P<day>\d\d)(?P<var1>.)(?P<hour>\d\d)(?P<var2>...)(?P<title>.*)'
 inforegex = re.compile(DTTokenString)
 
 for line in inlines:
     tokens = line.split()
+    if tokens[0] != "ASYSYM":
+        print("Not parsing WDC-like ASY/SYM file!!!")
+        #break  # need to have this bail here.  Possibly better off with a try/except
     # ignore first token, grab broad datetime info from second token, remaining tokens are data at minute intervals
     lineinfo = inforegex.match(tokens[1]).group
     dtlinestring = '20{}-{}-{}T{}:'.format(lineinfo('year'),lineinfo('month'),lineinfo('day'),lineinfo('hour'))
@@ -31,7 +35,7 @@ dates = list(set(dates))
 dates.sort()
 
 outlines = []
-current = ['"datetime"']
+current = ['"datetime(UTC)"']
 for key in realdata.keys():
     current.append('"{}"'.format(key))
 
