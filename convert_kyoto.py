@@ -16,6 +16,9 @@ inforegex = re.compile(DTTokenString)
 
 for line in inlines:
     tokens = line.split()
+    if tokens[0] != "ASYSYM":
+        print("Not parsing WDC-like ASY/SYM file!!!")
+        #break  # need to have this bail here.  Possibly better off with a try/except
     # ignore first token, grab broad datetime info from second token, remaining tokens are data at minute intervals
     lineinfo = inforegex.match(tokens[1]).group
     dtlinestring = '20{}-{}-{}T{}:'.format(lineinfo('year'),lineinfo('month'),lineinfo('day'),lineinfo('hour'))
